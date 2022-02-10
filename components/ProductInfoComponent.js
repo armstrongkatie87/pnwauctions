@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
-import { Text, View, ScrollView, FlatList,
-    Modal, Button, StyleSheet,
-    Alert, PanResponder } from 'react-native';
+import { Text, View, ScrollView, StyleSheet,
+    Alert, PanResponder, Share } from 'react-native';
 import { Card, Icon } from 'react-native-elements';
 import { connect } from 'react-redux';
 import { baseUrl } from '../shared/baseUrl';
@@ -21,7 +20,6 @@ const mapDispatchToProps = {
 
 
 function RenderProduct(props) {
-
     const {product} = props;
 
     const view = React.createRef();
@@ -59,6 +57,16 @@ function RenderProduct(props) {
         }
     });
 
+    const shareProduct = (title, message, url) => {
+        Share.share({
+            title: title,
+            message: `${title}: ${message} ${url}`,
+            url: url
+        },{
+            dialogTitle: 'Share ' + title
+        });
+    };
+
     if (product) {
         return (
             <Animatable.View
@@ -66,22 +74,34 @@ function RenderProduct(props) {
                 duration={2000}
                 delay={1000}
                 ref={view}
-                {...panResponder.panHandlers}>
+                {...panResponder.panHandlers}
+            >
                 <Card
                     featuredTitle={product.name}
-                    image={{uri: baseUrl + product.image}}>
-                    <Text style={{margin: 10}}>
-                        {product.description}
-                    </Text>
-                    <Icon
-                        name={props.favorite ? 'heart' : 'heart-o'}
-                        type='font-awesome'
-                        color='#ba68c8'
-                        raised
-                        reverse
-                        onPress={() => props.favorite ? 
-                            console.log('Already set as a favorite') : props.markFavorite()}
-                    />
+                    image={{uri: baseUrl + product.image}}
+                >
+                    <Text style={{margin: 10}}>{product.description}</Text>
+                    <View style={styles.cardRow}>
+                        <Icon
+                            name={props.favorite ? 'heart' : 'heart-o'}
+                            type='font-awesome'
+                            color='#ba68c8'
+                            raised
+                            reverse
+                            onPress={() => props.favorite
+                                ? console.log('Already set as a favorite') 
+                                : props.markFavorite()
+                            }
+                        />
+                        <Icon
+                                name={'share'}
+                                type='font-awesome'
+                                color='#00bcd4'
+                                raised
+                                reverse
+                                onPress={() => shareProduct(product.name, product.description, baseUrl + product.image)} 
+                            />
+                    </View>
                 </Card>
             </Animatable.View>
         );
@@ -112,5 +132,15 @@ class ProductInfo extends Component {
         );
     }
 }
+
+const styles = StyleSheet.create({
+    cardRow: {
+      alignItems: "center",
+      justifyContent: "center",
+      flex: 1,
+      flexDirection: "row",
+      margin: 20,
+    },
+  });
 
 export default connect(mapStateToProps, mapDispatchToProps)(ProductInfo);
