@@ -173,7 +173,7 @@ const CustomDrawerContentComponent = props => (
             forceInset={{top: 'always', horizontal: 'never'}}>
             <View style={styles.drawerHeader}>
                 <View style={{flex: 1}}>
-                    <Image source={require('./images/mtn-logo.jpeg')} style={styles.drawerImage} />
+                    <Image source={require('./images/logo.jpeg')} style={styles.drawerImage} />
                 </View>
                 <View style={{flex: 2}}>
                     <Text style={styles.drawerHeaderText}>Pacific Northwest Auctions</Text>
