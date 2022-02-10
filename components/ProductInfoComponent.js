@@ -32,7 +32,7 @@ function RenderProduct(props) {
                 <Icon
                     name={props.favorite ? 'heart' : 'heart-o'}
                     type='font-awesome'
-                    color='#d4c4fb'
+                    color='#ba68c8'
                     raised
                     reverse
                     onPress={() => props.favorite ? 
