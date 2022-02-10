@@ -3,10 +3,12 @@ import { Text, View, ScrollView } from 'react-native';
 import { Card, Icon } from 'react-native-elements';
 import { connect } from 'react-redux';
 import { baseUrl } from '../shared/baseUrl';
+import { postFavorite } from '../redux/ActionCreators';
 
 const mapStateToProps = state => {
     return {
-        products: state.products
+        products: state.products,
+        favorites: state.favorites
     };
 };
 
@@ -44,15 +46,8 @@ function RenderProduct(props) {
 
 class ProductInfo extends Component {
 
-    constructor(props) {
-        super(props);
-        this.state = {
-            favorite: false
-        };
-    }
-
-    markFavorite() {
-        this.setState({favorite: true});
+    markFavorite(productId) {
+        this.props.postFavorite(productId);
     }
 
     static navigationOptions = {
@@ -65,12 +60,12 @@ class ProductInfo extends Component {
         return (
             <ScrollView>
                 <RenderProduct product={product}
-                    favorite={this.state.favorite}
-                    markFavorite={() => this.markFavorite()}
+                    favorite={this.props.favorites.includes(productId)}
+                    markFavorite={() => this.markFavorite(productId)}
                 />
             </ScrollView>
         );
     }
 }
 
-export default connect(mapStateToProps)(ProductInfo);
+export default connect(mapStateToProps, mapDispatchToProps)(ProductInfo);
