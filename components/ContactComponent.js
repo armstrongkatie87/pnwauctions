@@ -1,12 +1,21 @@
 import React, { Component } from 'react';
 import { ScrollView, Text } from 'react-native';
-import { Card } from 'react-native-elements';
+import { Card, Button, Icon } from 'react-native-elements';
 import * as Animatable from 'react-native-animatable';
+import * as MailComposer from 'expo-mail-composer';
 
 class Contact extends Component {
 
     static navigationOptions = {
         title: 'Contact Us'
+    }
+
+    sendMail() {
+        MailComposer.composeAsync({
+            recipients: ['info@pnwauctions.com'],
+            subject: 'Inquiry',
+            body: 'To whom it may concern:'
+        })
     }
 
     render() {
@@ -19,9 +28,19 @@ class Contact extends Component {
                             <Text>Navy Yard City</Text>
                             <Text>Bremerton, WA 98312</Text>
                             <Text style={{ marginBottom: 10 }}>U.S.A.</Text>
-
                             <Text>Phone: 1-234-567-8910</Text>
                             <Text>Email: info@pnwauctions.com</Text>
+                            <Button
+                            title="Send Email"
+                            buttonStyle={{backgroundColor: '#8ed1fc', margin: 40}}
+                            icon={<Icon
+                                name='envelope-o'
+                                type='font-awesome'
+                                color='#fff'
+                                iconStyle={{marginRight: 10}}
+                            />}
+                            onPress={() => this.sendMail()}
+                        />
                     </Card>
                 </Animatable.View>
             </ScrollView>
