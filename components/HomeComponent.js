@@ -1,15 +1,34 @@
 import React, { Component } from 'react';
 import { View, Text, ScrollView } from 'react-native';
 import { Card, Button } from 'react-native-elements';
-import { PRODUCTS } from '../shared/products';
+import { connect } from 'react-redux';
+import { baseUrl } from '../shared/baseUrl';
+import Loading from './LoadingComponent';
 
-function RenderItem({item}) {
+const mapStateToProps = state => {
+    return {
+        products: state.products
+    };
+};
+
+function RenderItem(props) {
+    const {item} = props;
+
+    if (props.isLoading) {
+        return <Loading />;
+    }
+    if (props.errMess) {
+        return (
+            <View>
+                <Text>{props.errMess}</Text>
+            </View>
+        );
+    }
     if (item) {
         return ( 
             <Card 
-                image={require('./images/sqPaint.png')}
                 featuredTitle={item.name}
-            >
+                image={{uri: baseUrl + item.image}}>
                 <Text style={{margin: 10}}>
                     {item.description}
                 </Text>
@@ -30,13 +49,6 @@ function RenderItem({item}) {
 
 class Home extends Component {
 
-    constructor(props) {
-        super(props);
-        this.state = {
-            products: PRODUCTS,
-        };
-    }
-
     static navigationOptions = {
         title: 'Home'
     }
@@ -44,12 +56,14 @@ class Home extends Component {
     render() {
         return (
             <ScrollView>
-                <RenderItem 
-                    item={this.state.products.filter(product => product.featured)[0]}
+                <RenderItem
+                    item={this.props.products.products.filter(product => product.featured)[0]}
+                    isLoading={this.props.products.isLoading}
+                    errMess={this.props.products.errMess}
                 />
             </ScrollView>
         );
     }
 }
 
-export default Home;
+export default connect(mapStateToProps)(Home);

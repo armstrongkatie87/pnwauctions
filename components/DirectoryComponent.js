@@ -1,16 +1,17 @@
 import React, { Component } from 'react';
-import { FlatList } from 'react-native';
-import { ListItem } from 'react-native-elements';
-import { PRODUCTS } from '../shared/products';
+import { View, FlatList, Text } from 'react-native';
+import { Tile } from 'react-native-elements';
+import { connect } from 'react-redux';
+import { baseUrl } from '../shared/baseUrl';
+import Loading from './LoadingComponent';
+
+const mapStateToProps = state => {
+    return {
+        products: state.products
+    };
+};
 
 class Directory extends Component {
-
-    constructor(props) {
-        super(props);
-        this.state = {
-            products: PRODUCTS
-        };
-    }
 
     static navigationOptions = {
         title: 'Directory'
@@ -20,18 +21,29 @@ class Directory extends Component {
         const { navigate } = this.props.navigation;
         const renderDirectoryItem = ({item}) => {
             return (
-                <ListItem
+                <Tile
                     title={item.name}
-                    subtitle={item.description}
+                    caption={item.description}
+                    featured
                     onPress={() => navigate('ProductInfo', { productId: item.id })}
-                    leftAvatar={{ source: require('./images/saga.jpg')}}
+                    imageSrc={{uri: baseUrl + item.image}}
                 />
             );
         };
 
+        if (this.props.products.isLoading) {
+            return <Loading />;
+        }
+        if (this.props.products.errMess) {
+            return (
+                <View>
+                    <Text>{this.props.products.errMess}</Text>
+                </View>
+            );
+        }
         return (
             <FlatList
-                data={this.state.products}
+                data={this.props.products.products}
                 renderItem={renderDirectoryItem}
                 keyExtractor={item => item.id.toString()}
             />
@@ -39,4 +51,4 @@ class Directory extends Component {
     }
 }
 
-export default Directory;
+export default connect(mapStateToProps)(Directory);

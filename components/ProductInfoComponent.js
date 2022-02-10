@@ -1,8 +1,19 @@
 import React, { Component } from 'react';
-import { Text, View, ScrollView, FlatList } from 'react-native';
+import { Text, View, ScrollView } from 'react-native';
 import { Card, Icon } from 'react-native-elements';
-import { PRODUCTS } from '../shared/products';
-// import { FAVORITES } from '../shared/favorites';
+import { connect } from 'react-redux';
+import { baseUrl } from '../shared/baseUrl';
+
+const mapStateToProps = state => {
+    return {
+        products: state.products
+    };
+};
+
+const mapDispatchToProps = {
+    postFavorite: productId => postFavorite(productId)
+};
+
 
 function RenderProduct(props) {
 
@@ -12,8 +23,7 @@ function RenderProduct(props) {
         return (
             <Card
                 featuredTitle={product.name}
-                image={require('./images/sqPaint.png')}
-            >
+                image={{uri: baseUrl + product.image}}>
                 <Text style={{margin: 10}}>
                     {product.description}
                 </Text>
@@ -32,35 +42,11 @@ function RenderProduct(props) {
     return <View />;
 }
 
-// function RenderFavorites({favorites}) {
-
-//     const renderFavoriteItem = ({item}) => {
-//         return (
-//             <View style={{margin: 10}}>
-//                 <Text style={{fontSize: 14}}>{item.name}</Text>
-//                 <Text style={{fontSize: 12}}>{item.image}</Text>
-//             </View>
-//         );
-//     };
-
-//     return (
-//         <Card title='Favorites'>
-//             <FlatList
-//                 data={favorites}
-//                 renderItem={renderFavoriteItem}
-//                 keyExtractor={item => item.id.toString()}
-//             />
-//         </Card>
-//     );
-// }
-
 class ProductInfo extends Component {
 
     constructor(props) {
         super(props);
         this.state = {
-            products: PRODUCTS,
-            // favorites: FAVORITES,
             favorite: false
         };
     }
@@ -75,18 +61,16 @@ class ProductInfo extends Component {
 
     render() {
         const productId = this.props.navigation.getParam('productId');
-        const product = this.state.products.filter(product => product.id === productId)[0];
-        // const favorites = this.state.favorites.filter(favorite => favorite.productId === productId);
+        const product = this.props.products.products.filter(product => product.id === productId)[0];
         return (
             <ScrollView>
                 <RenderProduct product={product}
                     favorite={this.state.favorite}
                     markFavorite={() => this.markFavorite()}
                 />
-                {/* <RenderFavorites favorites={favorites} /> */}
             </ScrollView>
         );
     }
 }
 
-export default ProductInfo;
+export default connect(mapStateToProps)(ProductInfo);

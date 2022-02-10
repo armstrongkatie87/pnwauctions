@@ -1,36 +1,6 @@
 import * as ActionTypes from './ActionTypes';
 import { baseUrl } from '../shared/baseUrl';
 
-export const fetchFavorites = () => dispatch => {
-    return fetch(baseUrl + 'favorites')
-        .then(response => {
-                if (response.ok) {
-                    return response;
-                } else {
-                    const error = new Error(`Error ${response.status}: ${response.statusText}`);
-                    error.response = response;
-                    throw error;
-                }
-            },
-            error => {
-                const errMess = new Error(error.message);
-                throw errMess;
-            })
-        .then(response => response.json())
-        .then(favorites => dispatch(addFavorites(favorites)))
-        .catch(error => dispatch(favoritesFailed(error.message)));
-};
-
-export const favoritesFailed = errMess => ({
-    type: ActionTypes.FAVORITES_FAILED,
-    payload: errMess
-});
-
-export const addFavorites = favorites => ({
-    type: ActionTypes.ADD_FAVORITES,
-    payload: favorites
-});
-
 export const fetchProducts = () => dispatch => {
 
     dispatch(productsLoading());
